@@ -25,7 +25,7 @@ canvas {
     pointer-events: none;
 }
 
-/* Messages */
+/* ===== MESSAGES ===== */
 .message {
     position: absolute;
     width: 100%;
@@ -37,17 +37,33 @@ canvas {
     z-index: 2;
 }
 
-.top-message { top: 8%; font-size: 50px; color: #FFD700; }
-.middle-message { top: 45%; transform: translateY(-50%) scale(0.5); font-size: 40px; color: #FF7A5A; }
-.bottom-message { bottom: 14%; font-size: 38px; color: #32CD32; }
+.top-message {
+    top: 8%;
+    font-size: 50px;
+    color: #FFD700;
+}
 
+.middle-message {
+    top: 45%;
+    transform: translateY(-50%) scale(0.5);
+    font-size: 40px;
+    color: #FF7A5A;
+}
+
+.bottom-message {
+    bottom: 14%;
+    font-size: 38px;
+    color: #32CD32;
+}
+
+/* Animation */
 @keyframes fadeScale {
     0% { opacity: 0; transform: scale(0.5); }
     50% { opacity: 1; transform: scale(1.2); }
     100% { opacity: 1; transform: scale(1); }
 }
 
-/* Marquee Container */
+/* ===== MARQUEE ===== */
 .marquee-container {
     position: fixed;
     bottom: 0;
@@ -61,7 +77,6 @@ canvas {
     justify-content: center;
 }
 
-/* Firework Text */
 .firework-text {
     white-space: nowrap;
     font-size: 22px;
@@ -69,7 +84,6 @@ canvas {
     animation: marqueeMove 25s linear infinite;
 }
 
-/* Individual Letters */
 .firework-text span {
     display: inline-block;
     opacity: 0;
@@ -80,33 +94,42 @@ canvas {
     text-shadow: 0 0 12px rgba(255,255,255,0.8);
 }
 
-/* Letter firework pop */
 @keyframes letterPop {
-    0% {
-        transform: scale(0) rotate(0deg);
-        opacity: 0;
-    }
-    60% {
-        transform: scale(1.6) rotate(10deg);
-        opacity: 1;
-    }
-    100% {
-        transform: scale(1);
-        opacity: 1;
-    }
+    0% { transform: scale(0); opacity: 0; }
+    60% { transform: scale(1.6); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
 }
 
-/* Marquee movement */
 @keyframes marqueeMove {
     0% { transform: translateX(-100%); }
     100% { transform: translateX(100%); }
 }
 
-/* Responsive */
+/* ===== RESPONSIVE FIX ===== */
 @media (max-width: 768px) {
+    .top-message { font-size: 34px; top: 7%; }
+    .middle-message { 
+        font-size: 26px; 
+        top: 42%;
+        transform: translateY(-50%) scale(0.5);
+    }
+    .bottom-message { 
+        font-size: 24px; 
+        bottom: 22%;   /* 🔑 key fix */
+    }
     .firework-text { font-size: 18px; }
 }
+
 @media (max-width: 480px) {
+    .top-message { font-size: 28px; top: 6%; }
+    .middle-message { 
+        font-size: 22px; 
+        top: 40%;
+    }
+    .bottom-message { 
+        font-size: 20px; 
+        bottom: 25%;   /* 🔑 key fix */
+    }
     .firework-text { font-size: 15px; }
 }
 </style>
@@ -125,25 +148,23 @@ canvas {
 </div>
 
 <script>
-/* 🎆 Message Animation */
+/* Message animation */
 document.querySelectorAll(".message").forEach((msg, i) => {
-    setTimeout(() => {
-        msg.style.animation = "fadeScale 1s forwards";
-    }, i * 2500);
+    setTimeout(() => msg.style.animation = "fadeScale 1s forwards", i * 2500);
 });
 
-/* ✨ Letter-by-letter Firework Text */
+/* Letter firework text */
 const text = "From Transport Team – Medgulf Construction Co.";
 const marquee = document.getElementById("marqueeText");
 
-[...text].forEach((char, index) => {
+[...text].forEach((char, i) => {
     const span = document.createElement("span");
     span.textContent = char;
-    span.style.animationDelay = `${index * 0.08}s`;
+    span.style.animationDelay = `${i * 0.08}s`;
     marquee.appendChild(span);
 });
 
-/* 🎆 Fireworks Background */
+/* Fireworks background */
 const canvas = document.getElementById("fireworks");
 const ctx = canvas.getContext("2d");
 canvas.width = innerWidth;
@@ -161,7 +182,6 @@ class Particle {
     constructor(x,y,color){
         this.x=x; this.y=y;
         this.color=color;
-        this.radius=Math.random()*2+1;
         this.vx=(Math.random()-0.5)*6;
         this.vy=(Math.random()-0.5)*6;
         this.alpha=1;
@@ -175,7 +195,7 @@ class Particle {
         ctx.globalAlpha=this.alpha;
         ctx.fillStyle=this.color;
         ctx.beginPath();
-        ctx.arc(this.x,this.y,this.radius,0,Math.PI*2);
+        ctx.arc(this.x,this.y,2,0,Math.PI*2);
         ctx.fill();
         ctx.globalAlpha=1;
     }
