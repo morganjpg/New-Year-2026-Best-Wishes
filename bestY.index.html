@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy New Year 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+
+<style>
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+    background-image: url('https://www.citypng.com/public/uploads/preview/2026-happy-new-year-hd-transparent-background-704081695041287s1uo7vuyfl.png');
+    background-size: cover;
+    background-position: center;
+    font-family: Arial, sans-serif;
+}
+
+canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+}
+
+/* Messages */
+.message {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    font-family: 'Pacifico', cursive;
+    text-shadow: 2px 2px 15px rgba(0,0,0,0.7);
+    opacity: 0;
+    transform: scale(0.5);
+    z-index: 2;
+}
+
+.top-message { top: 8%; font-size: 50px; color: #FFD700; }
+.middle-message { top: 45%; transform: translateY(-50%) scale(0.5); font-size: 40px; color: #FF7A5A; }
+.bottom-message { bottom: 14%; font-size: 38px; color: #32CD32; }
+
+@keyframes fadeScale {
+    0% { opacity: 0; transform: scale(0.5); }
+    50% { opacity: 1; transform: scale(1.2); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+/* Marquee Container */
+.marquee-container {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 65px;
+    background: linear-gradient(90deg,#0f2027,#203a43,#2c5364);
+    overflow: hidden;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Firework Text */
+.firework-text {
+    white-space: nowrap;
+    font-size: 22px;
+    font-weight: bold;
+    animation: marqueeMove 25s linear infinite;
+}
+
+/* Individual Letters */
+.firework-text span {
+    display: inline-block;
+    opacity: 0;
+    animation: letterPop 0.6s forwards;
+    background: linear-gradient(90deg,#ff0043,#ffd700,#00ffff,#7CFF00,#ff6ec7);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 12px rgba(255,255,255,0.8);
+}
+
+/* Letter firework pop */
+@keyframes letterPop {
+    0% {
+        transform: scale(0) rotate(0deg);
+        opacity: 0;
+    }
+    60% {
+        transform: scale(1.6) rotate(10deg);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Marquee movement */
+@keyframes marqueeMove {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .firework-text { font-size: 18px; }
+}
+@media (max-width: 480px) {
+    .firework-text { font-size: 15px; }
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="fireworks"></canvas>
+
+<div class="message top-message">Happy New Year 2026!</div>
+<div class="message middle-message">Thank you for your amazing work in 2025!</div>
+<div class="message bottom-message">Let's achieve even more together in 2026!</div>
+
+<div class="marquee-container">
+    <div class="firework-text" id="marqueeText"></div>
+</div>
+
+<script>
+/* 🎆 Message Animation */
+document.querySelectorAll(".message").forEach((msg, i) => {
+    setTimeout(() => {
+        msg.style.animation = "fadeScale 1s forwards";
+    }, i * 2500);
+});
+
+/* ✨ Letter-by-letter Firework Text */
+const text = "From Transport Team – Medgulf Construction Co.";
+const marquee = document.getElementById("marqueeText");
+
+[...text].forEach((char, index) => {
+    const span = document.createElement("span");
+    span.textContent = char;
+    span.style.animationDelay = `${index * 0.08}s`;
+    marquee.appendChild(span);
+});
+
+/* 🎆 Fireworks Background */
+const canvas = document.getElementById("fireworks");
+const ctx = canvas.getContext("2d");
+canvas.width = innerWidth;
+canvas.height = innerHeight;
+
+window.onresize = () => {
+    canvas.width = innerWidth;
+    canvas.height = innerHeight;
+};
+
+let particles = [];
+const colors = ["#ff0043","#ffd700","#00ffff","#7CFF00","#ff6ec7","#ffffff"];
+
+class Particle {
+    constructor(x,y,color){
+        this.x=x; this.y=y;
+        this.color=color;
+        this.radius=Math.random()*2+1;
+        this.vx=(Math.random()-0.5)*6;
+        this.vy=(Math.random()-0.5)*6;
+        this.alpha=1;
+    }
+    update(){
+        this.x+=this.vx;
+        this.y+=this.vy;
+        this.alpha-=0.015;
+    }
+    draw(){
+        ctx.globalAlpha=this.alpha;
+        ctx.fillStyle=this.color;
+        ctx.beginPath();
+        ctx.arc(this.x,this.y,this.radius,0,Math.PI*2);
+        ctx.fill();
+        ctx.globalAlpha=1;
+    }
+}
+
+function launchFirework(){
+    const x=Math.random()*canvas.width;
+    const y=Math.random()*canvas.height*0.6;
+    for(let i=0;i<60;i++){
+        particles.push(new Particle(x,y,colors[Math.floor(Math.random()*colors.length)]));
+    }
+}
+
+function animate(){
+    ctx.fillStyle="rgba(0,0,0,0.2)";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    particles.forEach((p,i)=>{
+        p.update();
+        p.draw();
+        if(p.alpha<=0) particles.splice(i,1);
+    });
+    requestAnimationFrame(animate);
+}
+
+setInterval(launchFirework, 600);
+animate();
+</script>
+
+</body>
+</html>
